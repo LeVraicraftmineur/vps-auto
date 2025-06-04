@@ -1,19 +1,14 @@
-name: VPS via Serveo
+    - name:SHA256:mYwZC2uoHlPVOBbpTry0FHaxBTNDWfJU3YOE5LTPzxU
+      run: |
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        eval "$(ssh-agent -s)"
+        ssh-add ~/.ssh/id_rsa
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-on:
-  workflow_dispatch:
-
-jobs:
-  vps:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Installer SSH
-        run: sudo apt update && sudo apt install -y openssh-client
-
-      - name: Lancer tunnel SSH Serveo avec sous-domaine
-        run: |
-          echo "Connexion à Serveo..."
-          ssh -o StrictHostKeyChecking=no -R feuyar:22:localhost:22 serveo.net &
-          echo "Tunnel ouvert sur feuyar.serveo.net:22"
-          tail -f /dev/null
+    - name: Autoriser Serveo.net
+      run: |
+        mkdir -p ~/.ssh
+        touch ~/.ssh/known_hosts
+        ssh-keyscan -H serveo.net >> ~/.ssh/known_hosts
