@@ -1,0 +1,22 @@
+name: VPS GitHub Gratuit
+
+on:
+  workflow_dispatch:
+
+jobs:
+  start-vps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install ngrok & prepare VPS
+        run: |
+          sudo apt update
+          sudo apt install unzip screen -y
+          wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+          unzip ngrok-stable-linux-amd64.zip
+          chmod +x ngrok
+          ./ngrok authtoken ${{ secrets.NGROK_TOKEN }}
+          screen -dmS server ./ngrok tcp 22
+
+      - name: Show ngrok address
+        run: sleep 20 && curl -s http://localhost:4040/api/tunnels
