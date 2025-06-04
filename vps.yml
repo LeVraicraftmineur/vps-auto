@@ -1,22 +1,21 @@
-name: VPS GitHub Gratuit
+name: VPS via Serveo
 
 on:
   workflow_dispatch:
 
 jobs:
-  start-vps:
+  vps:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install ngrok & prepare VPS
-        run: |
-          sudo apt update
-          sudo apt install unzip screen -y
-          wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
-          unzip ngrok-stable-linux-amd64.zip
-          chmod +x ngrok
-          ./ngrok authtoken ${{ secrets.NGROK_TOKEN }}
-          screen -dmS server ./ngrok tcp 22
+      - name: Installer les outils nécessaires
+        run: sudo apt update && sudo apt install -y screen openssh-client
 
-      - name: Show ngrok address
-        run: sleep 20 && curl -s http://localhost:4040/api/tunnels
+      - name: Lancer le tunnel SSH Serveo
+        run: |
+          screen -dmS tunnel ssh -o StrictHostKeyChecking=no -R 2222:localhost:22 serveo.net
+          echo "Tunnel SSH lancé via Serveo"
+          sleep 20
+
+      - name: Afficher un message
+        run: echo "Tunnel actif, connecte-toi sur serveo.net avec ssh -p 2222 utilisateur@serveo.net"
