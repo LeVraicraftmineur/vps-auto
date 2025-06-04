@@ -9,13 +9,11 @@ jobs:
 
     steps:
       - name: Installer les outils nécessaires
-        run: sudo apt update && sudo apt install -y screen openssh-client
+        run: sudo apt update && sudo apt install -y openssh-client
 
-      - name: Lancer le tunnel SSH Serveo
+      - name: Lancer Serveo et garder le tunnel actif
         run: |
-          screen -dmS tunnel ssh -o StrictHostKeyChecking=no -R 2222:localhost:22 serveo.net
-          echo "Tunnel SSH lancé via Serveo"
-          sleep 20
-
-      - name: Afficher un message
-        run: echo "Tunnel actif, connecte-toi sur serveo.net avec ssh -p 2222 utilisateur@serveo.net"
+          echo "Connexion à Serveo..."
+          ssh -o StrictHostKeyChecking=no -R 2222:localhost:22 serveo.net &
+          echo "Tunnel ouvert. Attente infinie..."
+          tail -f /dev/null
