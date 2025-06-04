@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Installer les outils nécessaires
+      - name: Installer SSH
         run: sudo apt update && sudo apt install -y openssh-client
 
-      - name: Lancer Serveo et garder le tunnel actif
+      - name: Lancer tunnel SSH Serveo avec sous-domaine
         run: |
           echo "Connexion à Serveo..."
-          ssh -o StrictHostKeyChecking=no -R 2222:localhost:22 serveo.net &
-          echo "Tunnel ouvert. Attente infinie..."
+          ssh -o StrictHostKeyChecking=no -R feuyar:22:localhost:22 serveo.net &
+          echo "Tunnel ouvert sur feuyar.serveo.net:22"
           tail -f /dev/null
